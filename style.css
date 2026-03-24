@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+/* HERO SECTION */
+.hero {
+    background: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f') no-repeat center/cover;
+    height: 100vh;
+    position: relative;
+}
+
+.overlay {
+    background: rgba(0,0,0,0.6);
+    height: 100%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CENTER */
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* GLASS CARD */
+.glass-card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 15px;
+    color: white;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* BUTTONS */
+.btn {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    background: #00c6ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #0072ff;
+}
+
+.secondary {
+    background: #ff7e5f;
+}
+
+.small {
+    padding: 5px 10px;
+}
+
+/* INPUTS */
+input, select {
+    width: 90%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+/* NAVBAR */
+.navbar {
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* DASHBOARD */
+.dashboard {
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+/* SKILLS */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: rgba(255,255,255,0.2);
+    margin: 5px;
+    padding: 8px;
+    border-radius: 8px;
+}

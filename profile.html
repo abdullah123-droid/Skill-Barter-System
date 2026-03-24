@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - SkillSync</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <h2>SkillSync</h2>
+    <button onclick="logout()" class="btn small">Logout</button>
+</div>
+
+<div class="dashboard">
+
+    <div class="glass-card">
+        <h3>Your Profile</h3>
+        <p id="userData"></p>
+    </div>
+
+    <div class="glass-card">
+        <h3>Add Skill</h3>
+        <input id="skill" placeholder="e.g. Photoshop, Python">
+
+        <select id="type">
+            <option>Teach</option>
+            <option>Learn</option>
+        </select>
+
+        <button onclick="addSkill()" class="btn">Add Skill</button>
+    </div>
+
+    <div class="glass-card">
+        <h3>Your Skills</h3>
+        <ul id="skills"></ul>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
