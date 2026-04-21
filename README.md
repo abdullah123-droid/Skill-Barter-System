@@ -1,7 +1,7 @@
 # Skill Barter System
 
 # # Description
-This project uses localStorage as a mock backend for iteration 1.
+This project uses SQL database.
 It is a web based app which does skill learning exchanges between students of a university.
 
 # # Team Members:
@@ -11,11 +11,10 @@ It is a web based app which does skill learning exchanges between students of a 
 # # Tech Stack:
 - Backend: Local Storage (For now)
 - Frontend: HTML-CSS
-- Database SchemaSQL
+- Database Database.php
 
 # # How To Run
-Just upload every file on a compiler (like visual studio code) and install Live Server Extension.
-After that, run the code by using a web browser and it will display the web based app.
+Just go on skillsyncing.infinityfreeapp.com
 
 # # Backend
 Already in code
