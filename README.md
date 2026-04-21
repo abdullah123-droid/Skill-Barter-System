@@ -9,7 +9,7 @@ It is a web based app which does skill learning exchanges between students of a 
 - Usman Gohar 24L-2584
 
 # # Tech Stack:
-- Backend: Local Storage (For now)
+- Backend: SQL databases and php used 
 - Frontend: HTML-CSS
 - Database Database.php
 
