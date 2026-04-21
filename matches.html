@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Matches - SkillExchange</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="p-4">
+                <h4><i class="fas fa-exchange-alt"></i> SkillExchange</h4>
+                <hr class="bg-light">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-circle fa-3x"></i>
+                    <p class="mt-2" id="userName"></p>
+                </div>
+            </div>
+            <a href="dashboard.html"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+            <a href="profile.html"><i class="fas fa-user me-2"></i> My Profile</a>
+            <a href="skills.html"><i class="fas fa-tasks me-2"></i> Manage Skills</a>
+            <a href="search.html"><i class="fas fa-search me-2"></i> Find Partners</a>
+            <a href="requests.html"><i class="fas fa-envelope me-2"></i> Exchange Requests</a>
+            <a href="matches.html"><i class="fas fa-handshake me-2"></i> Skill Matches</a>
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+        </div>
+        
+        <div class="main-content">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header bg-gradient text-white">
+                        <h4><i class="fas fa-handshake"></i> Your Skill Matches</h4>
+                        <p class="mb-0">These users have complementary skills with you!</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="matchesList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        function loadMatches() {
+            $.ajax({
+                url: 'api/get_matches.php',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success && response.matches.length > 0) {
+                        let html = '';
+                        response.matches.forEach(match => {
+                            html += `
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5>${match.name}</h5>
+                                        <p class="text-muted">${match.department}</p>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <strong><i class="fas fa-chalkboard-teacher"></i> Can teach you:</strong>
+                                                <p>${match.can_teach || 'None'}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong><i class="fas fa-graduation-cap"></i> Wants to learn from you:</strong>
+                                                <p>${match.wants_to_learn || 'None'}</p>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary btn-sm" onclick="sendMatchRequest(${match.id})">
+                                            Send Exchange Request
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        $('#matchesList').html(html);
+                    } else {
+                        $('#matchesList').html('<div class="alert alert-info">No matches found yet. Add more skills to find better matches!</div>');
+                    }
+                }
+            });
+        }
+        
+        function sendMatchRequest(userId) {
+            const skillToLearn = prompt("What skill do you want to learn from this person?");
+            const skillToOffer = prompt("What skill can you offer in return?");
+            
+            if (skillToLearn && skillToOffer) {
+                $.ajax({
+                    url: 'api/send_request.php',
+                    method: 'POST',
+                    data: {
+                        receiver_id: userId,
+                        skill_offered: skillToOffer,
+                        skill_requested: skillToLearn
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Exchange request sent successfully!');
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    }
+                });
+            }
+        }
+        
+        $(document).ready(function() {
+            $('#userName').text(localStorage.getItem('user_name'));
+            loadMatches();
+        });
+    </script>
+</body>
+</html>

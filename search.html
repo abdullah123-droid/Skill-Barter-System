@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Partners - SkillExchange</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: fixed;
+            height: 100%;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 15px 20px;
+            transition: all 0.3s;
+        }
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.1);
+            padding-left: 30px;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .search-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .filter-group {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .skill-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 3px;
+            display: inline-block;
+        }
+        .user-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+        .user-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .search-input {
+            border-radius: 25px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+        }
+        .search-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="text-center p-4">
+            <i class="fas fa-user-circle fa-3x"></i>
+            <p class="mt-2" id="userName">User</p>
+        </div>
+        <a href="dashboard.html"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+        <a href="profile.html"><i class="fas fa-user me-2"></i> My Profile</a>
+        <a href="skills.html"><i class="fas fa-tasks me-2"></i> Manage Skills</a>
+        <a href="search.html"><i class="fas fa-search me-2"></i> Find Partners</a>
+        <a href="requests.html"><i class="fas fa-envelope me-2"></i> Exchange Requests</a>
+        <a href="matches.html"><i class="fas fa-handshake me-2"></i> Skill Matches</a>
+        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h2 class="mb-4"><i class="fas fa-search"></i> Find Learning Partners</h2>
+            
+            <div class="search-card">
+                <!-- Search Input - TYPABLE! -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">🔍 Search by skill, name, or department</label>
+                    <input type="text" class="form-control search-input" id="searchInput" 
+                           placeholder="Type a skill name (e.g., Python, Leadership, Design)...">
+                </div>
+                
+                <!-- Filters -->
+                <div class="filter-group">
+                    <label class="fw-bold mb-2"><i class="fas fa-filter"></i> Filters</label>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <select class="form-control" id="skillTypeFilter">
+                                <option value="">All Skills</option>
+                                <option value="teach">People Who Can Teach</option>
+                                <option value="learn">People Who Want to Learn</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <select class="form-control" id="categoryFilter">
+                                <option value="">All Categories</option>
+                                <option value="Programming">Programming</option>
+                                <option value="Web Development">Web Development</option>
+                                <option value="Data Science">Data Science</option>
+                                <option value="Design">Design</option>
+                                <option value="Business">Business</option>
+                                <option value="Language">Language</option>
+                                <option value="Soft Skills">Soft Skills</option>
+                                <option value="Creative">Creative</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Mobile">Mobile</option>
+                                <option value="Office">Office</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <button class="btn btn-primary w-100" onclick="searchUsers()">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results -->
+            <div id="searchResults">
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <p>Type a skill name and click Search to find partners</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check login
+        const userName = localStorage.getItem('user_name');
+        if (!userName) {
+            window.location.href = 'index.html';
+        }
+        document.getElementById('userName').textContent = userName;
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // Search on Enter key
+        $('#searchInput').on('keypress', function(e) {
+            if (e.which === 13) {
+                searchUsers();
+            }
+        });
+
+        function searchUsers() {
+            const search = $('#searchInput').val();
+            const skillType = $('#skillTypeFilter').val();
+            const category = $('#categoryFilter').val();
+            
+            $('#searchResults').html('<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Searching...</p></div>');
+            
+            $.ajax({
+                url: 'api/search_users.php',
+                method: 'GET',
+                data: { 
+                    search: search, 
+                    skill_type: skillType,
+                    category: category
+                },
+                success: function(response) {
+                    if (response.success && response.users && response.users.length > 0) {
+                        let html = '<div class="row">';
+                        response.users.forEach(user => {
+                            const teachSkills = user.skills ? user.skills.filter(s => s.skill_type === 'teach') : [];
+                            const learnSkills = user.skills ? user.skills.filter(s => s.skill_type === 'learn') : [];
+                            
+                            html += `
+                                <div class="col-md-6">
+                                    <div class="user-card">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5><i class="fas fa-user-circle"></i> ${user.name}</h5>
+                                                <p class="text-muted small mb-1">
+                                                    <i class="fas fa-building"></i> ${user.department || 'N/A'} 
+                                                    | <i class="fas fa-graduation-cap"></i> Semester ${user.semester || '?'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-2">
+                                            <strong class="text-primary"><i class="fas fa-chalkboard-teacher"></i> Can Teach:</strong><br>
+                                            <div class="mt-1">
+                                                ${teachSkills.map(s => `<span class="skill-badge">${s.skill_name}</span>`).join('') || '<span class="text-muted">None</span>'}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-2">
+                                            <strong class="text-success"><i class="fas fa-graduation-cap"></i> Wants to Learn:</strong><br>
+                                            <div class="mt-1">
+                                                ${learnSkills.map(s => `<span class="skill-badge" style="background:#28a745">${s.skill_name}</span>`).join('') || '<span class="text-muted">None</span>'}
+                                            </div>
+                                        </div>
+                                        
+                                        <button class="btn btn-primary btn-sm mt-3" onclick="sendExchangeRequest(${user.id})">
+                                            <i class="fas fa-exchange-alt"></i> Send Exchange Request
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        $('#searchResults').html(html);
+                    } else {
+                        $('#searchResults').html(`
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-user-slash fa-3x mb-3"></i>
+                                <p>No users found matching "${search || 'your search'}"</p>
+                                <small>Try a different skill name or check your spelling</small>
+                            </div>
+                        `);
+                    }
+                },
+                error: function() {
+                    $('#searchResults').html('<div class="alert alert-danger">Error searching. Please try again.</div>');
+                }
+            });
+        }
+
+        function sendExchangeRequest(userId) {
+            const skillToLearn = prompt("What skill do you want to learn from this person?");
+            if (!skillToLearn) return;
+            
+            const skillToOffer = prompt("What skill can you offer in return?");
+            if (!skillToOffer) return;
+            
+            $.ajax({
+                url: 'api/send_request.php',
+                method: 'POST',
+                data: {
+                    receiver_id: userId,
+                    skill_offered: skillToOffer,
+                    skill_requested: skillToLearn
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('✅ Exchange request sent successfully!');
+                    } else {
+                        alert('❌ Error: ' + (response.message || 'Could not send request'));
+                    }
+                },
+                error: function() {
+                    alert('❌ Error sending request');
+                }
+            });
+        }
+        
+        // Optional: Load some default results on page load
+        $(document).ready(function() {
+            // Show popular skills as suggestions
+            $('#searchInput').attr('placeholder', 'Type a skill (e.g., Python, Leadership, Figma, English)...');
+        });
+    </script>
+</body>
+</html>
