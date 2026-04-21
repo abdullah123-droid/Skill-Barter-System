@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - SkillExchange</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="p-4">
+                <h4><i class="fas fa-exchange-alt"></i> SkillExchange</h4>
+                <hr class="bg-light">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-circle fa-3x"></i>
+                    <p class="mt-2" id="userName"></p>
+                </div>
+            </div>
+            <a href="dashboard.html"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+            <a href="profile.html"><i class="fas fa-user me-2"></i> My Profile</a>
+            <a href="skills.html"><i class="fas fa-tasks me-2"></i> Manage Skills</a>
+            <a href="search.html"><i class="fas fa-search me-2"></i> Find Partners</a>
+            <a href="requests.html"><i class="fas fa-envelope me-2"></i> Exchange Requests</a>
+            <a href="matches.html"><i class="fas fa-handshake me-2"></i> Skill Matches</a>
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+        </div>
+        
+        <div class="main-content">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header bg-gradient text-white">
+                        <h4><i class="fas fa-user-edit"></i> Edit Profile</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="updateProfileForm">
+                            <div class="mb-3">
+                                <label>Full Name</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Email (Cannot be changed)</label>
+                                <input type="email" class="form-control" id="email" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label>Department</label>
+                                <input type="text" class="form-control" id="department" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Semester</label>
+                                <input type="number" class="form-control" id="semester" min="1" max="8" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </form>
+                        <div id="updateMessage" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#userName').text(localStorage.getItem('user_name'));
+            
+            // Load user profile
+            $.ajax({
+                url: 'api/get_user_profile.php',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        $('#name').val(response.user.name);
+                        $('#email').val(response.user.email);
+                        $('#department').val(response.user.department);
+                        $('#semester').val(response.user.semester);
+                    }
+                }
+            });
+            
+            $('#updateProfileForm').on('submit', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: 'api/update_profile.php',
+                    method: 'POST',
+                    data: {
+                        name: $('#name').val(),
+                        department: $('#department').val(),
+                        semester: $('#semester').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#updateMessage').html('<div class="alert alert-success">Profile updated successfully!</div>');
+                            localStorage.setItem('user_name', $('#name').val());
+                            setTimeout(() => location.reload(), 1500);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
